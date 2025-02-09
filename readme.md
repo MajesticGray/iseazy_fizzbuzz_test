@@ -167,8 +167,9 @@ This project follows the **DDD (Domain-Driven Design) principles**, ensuring a c
 
 ### Key Architectural Decisions
 
-1. **Separation of Layers**
-The Separation of Layers in Domain-Driven Design (DDD) ensures clean architecture, maintainability, and scalability by organizing the code into distinct concerns:
+1. **Separation of Layers**  
+
+    The Separation of Layers in Domain-Driven Design (DDD) ensures clean architecture, maintainability, and scalability by organizing the code into distinct concerns:
    - `Domain/` → **Business logic** (e.g., [FizzBuzzGenerator](src/Domain/Service/FizzBuzzGenerator.php))
    - `Application/` → **DTOs & Commands**
    - `Infrastructure/` → **Persistence, API Platform, Symfony integration**
@@ -180,19 +181,20 @@ The Separation of Layers in Domain-Driven Design (DDD) ensures clean architectur
     
     This flexibility allows us to switch databases, API formats, or frameworks with minimal changes, while ensuring a modular, maintainable, and future-proof application.
 
-2. **Use of API Platform**
+2. **Use of API Platform**  
+   
    I chose API Platform for this project because it provides a robust, scalable, and efficient way to build APIs with Symfony, including:
 
-   - **Automatic API Generation**
+   - **Automatic API Generation**  
       It reduces boilerplate code, making development faster and more maintainable.
       Built-in Validation & Serialization
-   - **Decoupled & DDD-Friendly**
+   - **Decoupled & DDD-Friendly**  
       Supports DTOs and custom processors, allowing a clean separation of concerns.
       Fits well into the Domain-Driven Design (DDD) architecture.
-   - **Extensibility and OpenAPI Support**
+   - **Extensibility and OpenAPI Support**  
       It can autogenerate OpenAPI documentation.
       Supports GraphQL, Hypermedia (JSON:API, HAL), and authentication.
-   - **Performance Optimizations**
+   - **Performance Optimizations**  
       Supports caching, pagination, and filters out-of-the-box.
       Optimized database queries through Doctrine ORM integration.
 
@@ -202,7 +204,8 @@ The Separation of Layers in Domain-Driven Design (DDD) ensures clean architectur
    - [FizzBuzzOutputDto](src/Application/Dto/FizzBuzzOutputDto.php) holds the output data to be sent, together with the response, to the client.
    - [FizzBuzzNormalizer](src/Infrastructure/ApiPlatform/Normalizer/FizzBuzzNormalizer.php) converts the invariable Domain [FizzBuzz](src/Domain/Model/FizzBuzz.php) model —with which the business logic operates— into the appropriate DTO for the final representation.
 
-3. **Doctrine for Persistence**
+3. **Doctrine for Persistence**  
+
    Doctrine is ideal for complex applications where data consistency, abstraction, and maintainability are priorities.
    It grants us the following advantages:
    - Encapsulation & Abstraction
@@ -246,32 +249,44 @@ The generator is pure business logic, making it easy to unit test independently.
          This file contains the following tests:  
          - **testFizzBuzzGenerationReturnsValidSequence**:  
          Ensures that the generation is working as expected, in a range from 30 to 67.
+
          - **testFizzBuzzGenerationThrowsOutOfRangeException**:  
          Ensures that a [FizzBuzzOutOfRangeException](src/Domain/Exception/FizzBuzzOutOfRangeException.php) is thrown when trying to generate more than `FIZZBUZZ_MAX_RANGE`. This variable is configurable in the .env files.
+
          - **testFizzBuzzGenerationEnsuresRangeCoherence**:  
          Ensures that a [FizzBuzzException](src/Domain/Exception/FizzBuzzException.php) is thrown when the end number is smaller than the start number.
+
          - **testFizzBuzzGenerationAcceptsNaturalNumbers**:  
          Ensures that a [FizzBuzzException](src/Domain/Exception/FizzBuzzException.php) is thrown when the start or end are not Natural numbers (> 0)
+
    - **Integration tests** for repository and services, including:
       - [FizzBuzzServiceTest](tests/Integration/Application/FizzBuzzServiceTest.php)
-      This file contains the following tests:
+      This file contains the following tests:  
+
          - **testFizzBuzzGeneratorIsWiredCorrectly**:  
          Ensures the FizzBuzzGenerator service is injected correctly
+
          - **testFizzBuzzServiceReturnsSequenceGenerator**:  
          Ensures the service returns a sequence generator.
       - [FizzBuzzRunRepositoryTest](tests/Integration/Persistence/FizzBuzzRunRepositoryTest.php)
-      This file contains the following tests:
+      This file contains the following tests:  
+
          - **testFizzBuzzRunIsPersistedCorrectly**:  
          Ensures that FizzBuzzRun entities are well persisted into the database
+
          - **testFizzBuzzRunCanBeDeleted**:  
          Ensures that FizzBuzzRun entities can be deleted.
+
    - **Functional tests** for API Platform behavior.
       - [FizzBuzzApiTest](tests/Functional/Api/FizzBuzzApiTest.php)
       This test tests the API endpoint end-to-end, including:
+
          - **testFizzBuzzApiReturnsCorrectResponse**:  
-         Ensures that a valid API request returns a successful response and the expected data.
+         Ensures that a valid API request returns a successful response and the expected data.  
+
          - **testFizzBuzzApiValidationFailure**:  
          Ensures that a bad API request returns the proper error and response code
+
          - **testFizzBuzzApiDatabasePersistence**:  
          Ensures that a valid API request ends up inserting the expected row into the database
 
@@ -299,4 +314,3 @@ The generator is pure business logic, making it easy to unit test independently.
 If you have any questions or want to discuss the project further, feel free to reach out on [hector.rovira@gmail.com](mailto:hector.rovira@gmail.com)
 
 🚀 **Enjoy the API!**
-
