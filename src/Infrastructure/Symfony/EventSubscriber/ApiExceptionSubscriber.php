@@ -20,7 +20,7 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
         $exception = $event->getThrowable();
 
         // Handle only non controlled exceptions
-        if (!$exception instanceof HttpException) {
+        if (!$exception instanceof HttpException || $event->getRequest()->getRequestUri() === '/') {
             return;
         }
 
