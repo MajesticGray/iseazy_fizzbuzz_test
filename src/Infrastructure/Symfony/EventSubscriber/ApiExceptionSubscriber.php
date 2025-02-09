@@ -2,14 +2,17 @@
 
 namespace App\Infrastructure\Symfony\EventSubscriber;
 
-use ApiPlatform\Validator\Exception\ValidationException;
-use App\Domain\Exception\FizzBuzzException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * This class listens uncontrolled exceptions and reformats
+ *   the response as JSON for API consistency
+ */
 class ApiExceptionSubscriber implements EventSubscriberInterface
 {
     public function onKernelException(ExceptionEvent $event): void
@@ -17,13 +20,12 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
         $exception = $event->getThrowable();
 
         // Handle only non controlled exceptions
-        if ($exception instanceof FizzBuzzException || $exception instanceof ValidationException) {
+        if (!$exception instanceof HttpException) {
             return;
         }
 
-        $exception  = $event->getThrowable();
         $statusCode = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
-        $message    = $exception instanceof HttpExceptionInterface ? $exception->getMessage() : 'Internal Server Error';
+        $message    = $exception->getMessage();
 
         $response = new JsonResponse(
             data: ['errors' => [

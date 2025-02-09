@@ -6,15 +6,18 @@ namespace App\Infrastructure\ApiPlatform\Processor;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Application\Dto\FizzBuzzInputDto;
-use App\Application\Dto\FizzBuzzOutputDto;
+use App\Domain\Exception\FizzBuzzException;
 use App\Domain\Model\FizzBuzz as FizzBuzzModel;
 use App\Domain\Service\FizzBuzzGenerator;
 use App\Infrastructure\Doctrine\Entity\FizzBuzzRun;
 use App\Infrastructure\Persistence\Repository\FizzBuzzRunRepository;
-use Exception;
+use Override;
 
 /**
-
+ * This class is the intermediate middleware between the API entry point
+ *   and Domain business logic. It's responsible for processing the input
+ *   data and calling the appropriate service. It also persists the results
+ *   into the database and returns a Model representation back to the API
  */
 class FizzBuzzRunProcessor implements ProcessorInterface
 {
@@ -25,18 +28,21 @@ class FizzBuzzRunProcessor implements ProcessorInterface
     }
 
     /**
-     * Summary of process
+     * Takes the FizzBuzzInputDto input data, calls the FizzBuzz sequence generator and stores the sequence
+     * Returns the Domain model instance (FizzBuzzModel) representing the data
+     *
      * @param FizzBuzzInputDto $data
      * @param \ApiPlatform\Metadata\Operation $operation
      * @param array $uriVariables
      * @param array $context
-     * @throws \Exception
-     * @return never
+     * @throws FizzBuzzException
+     * @return FizzBuzzModel
      */
+    #[Override]
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): FizzBuzzModel
     {
         if (!$data instanceof FizzBuzzInputDto) {
-            throw new Exception('Attempted to process wrong data type');
+            throw new FizzBuzzException('Attempted to process wrong data type');
         }
 
         $sequence       = $this->fizzBuzzGenerator->generate($data->start, $data->end);
@@ -52,6 +58,11 @@ class FizzBuzzRunProcessor implements ProcessorInterface
         return $this->convertToDomainModel($runEntity);
     }
 
+    /**
+     * Converts the Doctrine entity into the invariable Domain Model
+     * @param \App\Infrastructure\Doctrine\Entity\FizzBuzzRun $entity
+     * @return FizzBuzzModel
+     */
     private function convertToDomainModel(FizzBuzzRun $entity): FizzBuzzModel
     {
         return new FizzBuzzModel(
@@ -59,39 +70,6 @@ class FizzBuzzRunProcessor implements ProcessorInterface
             end: $entity->finalNumber,
             fizzBuzz: $entity->fizzBuzz,
             createdAt: $entity->createdAt,
-        );
-    }
-
-    /*
-    private function convertToDto(FizzBuzzRun $entity): FizzBuzzOutputDto
-    {
-        return new FizzBuzzOutputDto(
-            start: $entity->initialNumber,
-            end: $entity->finalNumber,
-            fizzBuzz: $entity->fizzBuzz,
-            createdAt: $entity->createdAt,
-        );
-    }
-        */
-
-    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
-    {
-        // Generate FizzBuzz sequence
-        die('provide');
-        $fizzBuzzSequence = $this->fizzBuzzGenerator->generate($start, $end);
-        $fizzBuzzString   = implode(' ', $fizzBuzzSequence);
-
-        // Persist the result
-        /*
-        $fizzBuzzRun = new FizzBuzzRun(initialNumber: $start, finalNumber: $end, fizzBuzz: $fizzBuzzString);
-        $this->repository->save($fizzBuzzRun);
-*/
-        // Return DTO for API response
-        return new FizzBuzzOutputDto(
-            $start,
-            $end,
-            $fizzBuzzString,
-            $fizzBuzzRun->getCreatedAt()->format('Y-m-d H:i:s'),
         );
     }
 }

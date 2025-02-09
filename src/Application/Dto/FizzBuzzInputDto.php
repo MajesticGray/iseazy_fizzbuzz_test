@@ -10,8 +10,8 @@ use App\Infrastructure\ApiPlatform\Processor\FizzBuzzRunProcessor;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * This data transfer object contains the input data to generate a FizzBuzz sequence
- * This is the object representation used by the API
+ * This data transfer class contains the input data received by the
+ *   API to generate the FizzBuzz sequence.
  */
 #[ApiResource(
     operations: [

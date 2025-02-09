@@ -7,8 +7,8 @@ use DateTimeInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * This data transfer object contains the output data for the request response
- * This is the object representation used by the API
+ * This data transfer class contains the output data sent by the
+ *   API together with the response
  */
 class FizzBuzzOutputDto
 {

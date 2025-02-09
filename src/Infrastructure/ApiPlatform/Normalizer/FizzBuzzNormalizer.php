@@ -10,6 +10,10 @@ use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
+/**
+ * This class converts the FizzBuzz Domain model returned by the processor
+ *   into the FizzBuzzOutputDto object the API sends in the response.
+ */
 class FizzBuzzNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;
@@ -31,6 +35,11 @@ class FizzBuzzNormalizer implements NormalizerInterface, NormalizerAwareInterfac
         return $this->normalizer->normalize($dto, $format, $context + [__CLASS__ => true]);
     }
 
+    /**
+     * Converts the FizzBuzz Domain Model into the API DTO representation
+     * @param \App\Domain\Model\FizzBuzz $fizzBuzzModel
+     * @return FizzBuzzOutputDto
+     */
     private function convertToDto(FizzBuzz $fizzBuzzModel): FizzBuzzOutputDto
     {
         return new FizzBuzzOutputDto(
