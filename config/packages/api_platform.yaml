@@ -1,0 +1,27 @@
+api_platform:
+    title: isEazy API
+    version: 0.0.1
+
+    # The following 3 settings are normally enabled in dev environment.
+    enable_docs: false
+    enable_entrypoint: false
+    enable_swagger_ui: false
+
+    resource_class_directories:
+        - '%kernel.project_dir%/src/Application/Dto'
+
+    defaults:
+        stateless: false
+        cache_headers:
+            vary: ['Content-Type', 'Authorization', 'Origin']
+        pagination_enabled: true       # Enable pagination globally
+        pagination_items_per_page: 10  # Default items per page
+        pagination_client_enabled: true # Allow clients to request specific pages
+        pagination_client_items_per_page: true # Allow clients to control items per page
+    formats:
+        jsonapi: ['application/vnd.api+json']
+        #jsonld: ['application/ld+json']
+        json: ['application/json']
+    error_formats:
+        jsonapi: ['application/vnd.api+json']
+        #html: ['application/html']

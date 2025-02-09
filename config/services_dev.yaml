@@ -1,0 +1,10 @@
+services:
+  _defaults:
+      autowire: true
+      autoconfigure: true
+  mailer.dev.set_recipients:
+    class: Symfony\Component\Mailer\EventListener\EnvelopeListener
+    tags: ['kernel.event_subscriber']
+    arguments:
+      $sender: null
+      $recipients: ['%env(DEV_EMAIL_OVERRIDE)%']

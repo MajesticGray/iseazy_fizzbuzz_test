@@ -1,0 +1,37 @@
+volumes:
+  iseazy_db:
+    driver: local
+
+networks:
+  backend:
+    driver: bridge
+
+services:
+  iseazy_backend_php:
+    build: .
+    container_name: iseazy_backend_php
+    volumes:
+      - .:/var/www/html/
+      - ./docker-files/vhost.conf:/etc/apache2/sites-available/000-default.conf
+    networks:
+      - backend
+    ports:
+      - ${API_EXPOSED_PORT}:80
+    depends_on:
+      - iseazy_backend_mysql
+    environment:
+      - TZ=UTC
+
+  iseazy_backend_mysql:
+    image: mariadb:10.7
+    container_name: iseazy_backend_mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=iseazy
+      - TZ=UTC
+    volumes:
+      - iseazy_db:/var/lib/mysql
+      - ./docker-files/iseazy.sql:/docker-entrypoint-initdb.d/1_db.sql
+      - ./docker-files/iseazy_test.sql:/docker-entrypoint-initdb.d/2_testdb.sql
+    networks:
+      - backend

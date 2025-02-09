@@ -1,0 +1,60 @@
+name: Run PHPUnit Tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    services:
+      iseazy_backend_mysql:
+        image: mariadb:10.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: iseazy_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --host=127.0.0.1 --user=root --password=root"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, intl, pdo, pdo_mysql
+          tools: composer, symfony
+
+      - name: Set up Symfony Environment
+        run: |
+          cp .env.test .env
+          rm .env.test
+
+      - name: Configure database connection
+        run: |
+          echo "DATABASE_URL=mysql://root:root@127.0.0.1/iseazy_test?charset=utf8mb4&version=10.7.8-MariaDB-1" >> .env
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Setup the test database
+        run: |
+          php bin/console doctrine:database:create --if-not-exists --env=test
+          php bin/console doctrine:schema:update --force --env=test
+
+      - name: Run PHPUnit Tests
+        run: vendor/bin/phpunit --testdox
