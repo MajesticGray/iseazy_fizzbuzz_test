@@ -13,13 +13,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class FizzBuzzOutputDto
 {
     public function __construct(
-        #[Groups(['fizzbuz:read'])]
+        #[Groups(['fizzbuzz:read'])]
         public int $start,
-        #[Groups(['fizzbuz:read'])]
+        #[Groups(['fizzbuzz:read'])]
         public int $end,
-        #[Groups(['fizzbuz:read'])]
+        #[Groups(['fizzbuzz:read'])]
         public string $fizzBuzz,
-        #[Groups(['fizzbuz:read'])]
+        #[Groups(['fizzbuzz:read'])]
         public DateTimeInterface $createdAt,
     ) {
     }

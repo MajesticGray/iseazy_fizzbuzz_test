@@ -24,6 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             input: FizzBuzzInputDto::class,
             output: FizzBuzzOutputDto::class,
             processor: FizzBuzzRunProcessor::class,
+            normalizationContext: ['groups' => ['fizzbuzz:read']],
         ),
     ],
 )]
